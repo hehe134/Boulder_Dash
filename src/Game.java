@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 
 public class Game {
     public char[][] map = new char[50][50];
-    public point robot;
+    public Point robot;
     public int lamda = 0;
     int m;
     int n;
@@ -19,10 +19,10 @@ public class Game {
 //    O — открытый выход
 //    " " — пробел, пустая клетка
 
-    public class point {
+    public class Point {
         int x, y;
 
-        public void point(int x, int y) {
+        public Point(int x, int y) {
             this.x = x;
             this.y = y;
         }
@@ -33,6 +33,14 @@ public class Game {
 
         public int getY() {
             return y;
+        }
+
+        public void setX(int x) {
+            this.x = x;
+        }
+
+        public void setY(int y) {
+            this.y = y;
         }
     }
 
@@ -180,7 +188,10 @@ public class Game {
             int maxlength = 0;
             while (line != null) {
                 for (int i = 0; i < line.length(); i++) {
-                    map[j][i] = line.charAt(i);
+                    map[i][j] = line.charAt(i);
+                    if (line.charAt(i) == 'R') {
+                        robot = new Point(i, j);
+                    }
                 }
                 if (line.length() > maxlength) maxlength = line.length();
                 line = br.readLine();
@@ -196,11 +207,12 @@ public class Game {
 
     public static void main(String[] args) {
 
-        Game myGame=new Game();
+        Game myGame = new Game();
         myGame.getMap();
-
-        for (int i=0;i<myGame.n;i++){
-            for (int j=0;j<myGame.m;j++){
+        myGame.turnDown();
+        System.out.println("Robot: ("+myGame.robot.getX() + " , " + myGame.robot.getY()+")");
+        for (int j = 0; j < myGame.n; j++) {
+            for (int i = 0; i < myGame.m; i++) {
                 System.out.print(myGame.map[i][j]);
             }
             System.out.println();
