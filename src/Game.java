@@ -8,11 +8,13 @@ public class Game {
     public Point robot;
     public int lamda = 0;
     public int allLamda = 0;
-    public Point exit;
+    public Point lift;
     int m;
-   int n;
-   public boolean canPlay = true;
-   public boolean win=false;
+    int n;
+    int move;
+    int score;
+    public boolean canPlay = true;
+    public boolean win = false;
     //    R — робот
 //    * — камень
 //    L — закрытый выход
@@ -121,14 +123,14 @@ public class Game {
                 break;
             case '\\':
                 lamda++;
-                openTheExit();
+                openTheLift();
                 map[robot.x][robot.y] = ' ';
                 robot.x += n;
                 map[robot.x][robot.y] = 'R';
                 break;
             case '0':
-                win=true;
-                canPlay=false;
+                win = true;
+                canPlay = false;
                 break;
         }
     }
@@ -145,7 +147,7 @@ public class Game {
                 break;
             case '\\':
                 lamda++;
-                openTheExit();
+                openTheLift();
                 map[robot.x][robot.y] = ' ';
                 robot.y += n;
                 map[robot.x][robot.y] = 'R';
@@ -156,15 +158,15 @@ public class Game {
                 map[robot.x][robot.y] = 'R';
                 break;
             case '0':
-                win=true;
-                canPlay=false;
+                win = true;
+                canPlay = false;
                 break;
         }
     }
 
-    void openTheExit() {
+    void openTheLift() {
         if (allLamda == lamda) {
-            map[exit.x][exit.y] = '0';
+            map[lift.x][lift.y] = '0';
         }
     }
 
@@ -214,7 +216,7 @@ public class Game {
                         robot = new Point(i, j);
                     }
                     if (line.charAt(i) == 'L') {
-                        exit = new Point(i, j);
+                        lift = new Point(i, j);
                     }
                     if (line.charAt(i) == '\\') {
                         allLamda++;
