@@ -123,6 +123,7 @@ public class Game {
                 break;
             case '\\':
                 lamda++;
+                score+=25;
                 openTheLift();
                 map[robot.x][robot.y] = ' ';
                 robot.x += n;
@@ -130,6 +131,7 @@ public class Game {
                 break;
             case '0':
                 win = true;
+                score+=50;
                 canPlay = false;
                 break;
         }
@@ -147,6 +149,7 @@ public class Game {
                 break;
             case '\\':
                 lamda++;
+                score+=25;
                 openTheLift();
                 map[robot.x][robot.y] = ' ';
                 robot.y += n;
@@ -159,6 +162,7 @@ public class Game {
                 break;
             case '0':
                 win = true;
+                score+=50;
                 canPlay = false;
                 break;
         }
@@ -174,6 +178,8 @@ public class Game {
         if (canPlay) {
             RightOrLeft(true);
             fall();
+            move++;
+            score--;
         }
     }
 
@@ -181,6 +187,8 @@ public class Game {
         if (canPlay) {
             RightOrLeft(false);
             fall();
+            move++;
+            score--;
         }
     }
 
@@ -188,6 +196,8 @@ public class Game {
         if (canPlay) {
             UpOrDown(false);
             fall();
+            move++;
+            score--;
         }
     }
 
@@ -195,9 +205,16 @@ public class Game {
         if (canPlay) {
             UpOrDown(true);
             fall();
+            move++;
+            score--;
         }
     }
 
+    public void commandA(){
+        canPlay=false;
+        win=true;
+        score+=25;
+    }
     public void getMap() {
         try {
             String pathname = "map/input";
