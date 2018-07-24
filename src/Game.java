@@ -7,9 +7,12 @@ public class Game {
     public char[][] map = new char[50][50];
     public Point robot;
     public int lamda = 0;
+    public int allLamda = 0;
+    public Point exit;
     int m;
-    int n;
-    boolean canPlay = true;
+   int n;
+   public boolean canPlay = true;
+   public boolean win=false;
     //    R — робот
 //    * — камень
 //    L — закрытый выход
@@ -118,12 +121,14 @@ public class Game {
                 break;
             case '\\':
                 lamda++;
+                openTheExit();
                 map[robot.x][robot.y] = ' ';
                 robot.x += n;
                 map[robot.x][robot.y] = 'R';
                 break;
             case '0':
-                //win
+                win=true;
+                canPlay=false;
                 break;
         }
     }
@@ -140,6 +145,7 @@ public class Game {
                 break;
             case '\\':
                 lamda++;
+                openTheExit();
                 map[robot.x][robot.y] = ' ';
                 robot.y += n;
                 map[robot.x][robot.y] = 'R';
@@ -150,29 +156,44 @@ public class Game {
                 map[robot.x][robot.y] = 'R';
                 break;
             case '0':
-                //win
+                win=true;
+                canPlay=false;
                 break;
         }
     }
 
+    void openTheExit() {
+        if (allLamda == lamda) {
+            map[exit.x][exit.y] = '0';
+        }
+    }
+
     public void turnRight() {
-        RightOrLeft(true);
-        fall();
+        if (canPlay) {
+            RightOrLeft(true);
+            fall();
+        }
     }
 
     public void turnLeft() {
-        RightOrLeft(false);
-        fall();
+        if (canPlay) {
+            RightOrLeft(false);
+            fall();
+        }
     }
 
     public void turnUp() {
-        UpOrDown(false);
-        fall();
+        if (canPlay) {
+            UpOrDown(false);
+            fall();
+        }
     }
 
     public void turnDown() {
-        UpOrDown(true);
-        fall();
+        if (canPlay) {
+            UpOrDown(true);
+            fall();
+        }
     }
 
     public void getMap() {
@@ -192,6 +213,12 @@ public class Game {
                     if (line.charAt(i) == 'R') {
                         robot = new Point(i, j);
                     }
+                    if (line.charAt(i) == 'L') {
+                        exit = new Point(i, j);
+                    }
+                    if (line.charAt(i) == '\\') {
+                        allLamda++;
+                    }
                 }
                 if (line.length() > maxlength) maxlength = line.length();
                 line = br.readLine();
@@ -205,17 +232,5 @@ public class Game {
         }
     }
 
-    public static void main(String[] args) {
 
-        Game myGame = new Game();
-        myGame.getMap();
-        myGame.turnDown();
-        System.out.println("Robot: ("+myGame.robot.getX() + " , " + myGame.robot.getY()+")");
-        for (int j = 0; j < myGame.n; j++) {
-            for (int i = 0; i < myGame.m; i++) {
-                System.out.print(myGame.map[i][j]);
-            }
-            System.out.println();
-        }
-    }
 }
