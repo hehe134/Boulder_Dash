@@ -1,3 +1,5 @@
+package robot;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -90,6 +92,7 @@ public class Game {
                                 } //dead
                             }
                             break;
+
                     }
                 }
             }
@@ -123,7 +126,7 @@ public class Game {
                 break;
             case '\\':
                 lamda++;
-                score+=25;
+                score += 25;
                 openTheLift();
                 map[robot.x][robot.y] = ' ';
                 robot.x += n;
@@ -131,7 +134,7 @@ public class Game {
                 break;
             case '0':
                 win = true;
-                score+=50;
+                score += 50;
                 canPlay = false;
                 break;
         }
@@ -149,7 +152,7 @@ public class Game {
                 break;
             case '\\':
                 lamda++;
-                score+=25;
+                score += 25;
                 openTheLift();
                 map[robot.x][robot.y] = ' ';
                 robot.y += n;
@@ -162,7 +165,7 @@ public class Game {
                 break;
             case '0':
                 win = true;
-                score+=50;
+                score += 50;
                 canPlay = false;
                 break;
         }
@@ -210,11 +213,12 @@ public class Game {
         }
     }
 
-    public void commandA(){
-        canPlay=false;
-        win=true;
-        score+=25;
+    public void commandA() {
+        canPlay = false;
+        win = true;
+        score += 25;
     }
+
     public void getMap() {
         try {
             String pathname = "map/input";
@@ -251,5 +255,31 @@ public class Game {
         }
     }
 
-
-}
+    public boolean canMove(double a) {
+        if (a <0.25) {
+            char sth = map[robot.x + 1][robot.y];
+            if (sth == ' ' || sth == '.' || sth == '0' || sth == '\\') {
+                return true;
+            } else if (sth == '*' && map[robot.x + 2][robot.y] == ' ') {
+                return true;
+            } else return false;
+        } else if (a >= 0.25 && a < 0.5) {
+            char sth = map[robot.x - 1][robot.y];
+            if (sth == ' ' || sth == '.' || sth == '0' || sth == '\\') {
+                return true;
+            } else if (sth == '*' && map[robot.x - 2][robot.y] == ' ') {
+                return true;
+            } else return false;
+        } else if (a >= 0.5 && a < 0.75) {
+            char sth = map[robot.x][robot.y - 1];
+            if (sth == ' ' || sth == '.' || sth == '0' || sth == '\\') {
+                return true;
+            } else return false;
+        } else {
+            char sth = map[robot.x][robot.y + 1];
+            if (sth == ' ' || sth == '.' || sth == '0' || sth == '\\') {
+                return true;
+            } else return false;
+        }
+    }
+    }
