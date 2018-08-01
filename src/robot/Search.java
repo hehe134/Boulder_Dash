@@ -29,6 +29,7 @@ public class Search {
             }
             if (myGame.move > n) break;
         }
+
         if (myGame.move < n && myGame.win) {
             n = myGame.move;
             MinS = s;
