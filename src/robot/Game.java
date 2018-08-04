@@ -54,12 +54,20 @@ public class Game {
     public void fall() {
         for (int x = 0; x < m; x++) {
             for (int y = 0; y < n; y++) {
-                if (map[x][y] == '*') {
+                if (map[x][y] == '*' || map[x][y] == '@') {
                     switch (map[x][y + 1]) {
                         //Под камнем пустота — камень падает на 1 клетку вниз.
                         case ' ':
                             map[x][y] = ' ';
-                            map[x][y + 1] = '*';
+                            if (map[x][y] == '*') {
+                                map[x][y + 1] = '*';
+                            } else {
+                                if (map[x][y + 2] != ' ') {
+                                    map[x][y + 1] = '\\';
+                                } else{
+                                    map[x][y + 1] = '@';
+                                }
+                            }
                             if (map[x][y + 2] == 'R') {
                                 canPlay = false;
                             } //dead
@@ -68,7 +76,15 @@ public class Game {
                         case '*':
                             if (map[x + 1][y + 1] == ' ' && map[x + 1][y] == ' ') {
                                 map[x][y] = ' ';
-                                map[x + 1][y + 1] = '*';
+                                if (map[x][y] == '*') {
+                                    map[x + 1][y + 1] = '*';
+                                } else {
+                                    if (map[x + 1][y + 2] != ' ') {
+                                        map[x + 1][y + 1] = '\\';
+                                    } else{
+                                        map[x + 1][y + 1] = '@';
+                                    }
+                                }
                                 if (map[x + 1][y + 2] == 'R') {
                                     canPlay = false;
                                 } //dead
@@ -76,7 +92,13 @@ public class Game {
                             // //Под камнем — камень, слева пусто и слева внизу пусто — камень падает по диагонали влево.
                             else if (map[x - 1][y + 1] == ' ' && map[x - 1][y] == ' ') {
                                 map[x][y] = ' ';
-                                map[x - 1][y + 1] = '*';
+                                if (map[x][y] == '*') {
+                                    map[x - 1][y + 1] = '*';
+                                } else {
+                                    if (map[x - 1][y + 2] != ' ') {
+                                        map[x - 1][y + 1] = '\\';
+                                    }else map[x - 1][y + 1] = '@';
+                                }
                                 if (map[x - 1][y + 2] == 'R') {
                                     canPlay = false;
                                 } //dead
@@ -86,7 +108,13 @@ public class Game {
                         case '\\':
                             if (map[x + 1][y] == ' ' && map[x + 1][y + 1] == ' ') {
                                 map[x][y] = ' ';
-                                map[x + 1][y + 1] = '*';
+                                if (map[x][y] == '*') {
+                                    map[x + 1][y + 1] = '*';
+                                } else {
+                                    if (map[x+1][y+2]!=' '){
+                                        map[x+1][y+1]='\\';
+                                    }else map[x + 1][y + 1] = '@';
+                                }
                                 if (map[x + 1][y + 2] == 'R') {
                                     canPlay = false;
                                 } //dead
@@ -122,6 +150,14 @@ public class Game {
                     robot.x += n;
                     map[robot.x][robot.y] = 'R';
                     map[robot.x + n][robot.y] = '*';
+                }
+                break;
+            case '@':
+                if (map[robot.x + 2 * n][robot.y] == ' ') {
+                    map[robot.x][robot.y] = ' ';
+                    robot.x += n;
+                    map[robot.x][robot.y] = 'R';
+                    map[robot.x + n][robot.y] = '@';
                 }
                 break;
             case '\\':
@@ -239,7 +275,7 @@ public class Game {
                     if (line.charAt(i) == 'L') {
                         lift = new Point(i, j);
                     }
-                    if (line.charAt(i) == '\\') {
+                    if (line.charAt(i) == '\\' || line.charAt(i) == '@') {
                         allLamda++;
                     }
                 }
@@ -256,7 +292,7 @@ public class Game {
     }
 
     public boolean canMove(double a) {
-        if (a <0.25) {
+        if (a < 0.25) {
             char sth = map[robot.x + 1][robot.y];
             if (sth == ' ' || sth == '.' || sth == '0' || sth == '\\') {
                 return true;
@@ -282,4 +318,4 @@ public class Game {
             } else return false;
         }
     }
-    }
+}

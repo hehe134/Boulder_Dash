@@ -9,7 +9,7 @@ public class GameTest {
 
 
         Search mysearch = new Search();
-        mysearch.fd2(10);
+        mysearch.fd2(500);
         System.out.println(mysearch.MinS);
 
 //        myGame.turnLeft();
