@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 
 public class Game {
-    public char[][] map = new char[50][50];
+    public char[][] map;
+    int[][] times;
     public Point robot;
     public int lamda = 0;
     public int allLamda = 0;
@@ -17,6 +19,9 @@ public class Game {
     int score;
     public boolean canPlay = true;
     public boolean win = false;
+    HashMap<Character, Point> teleporter = new HashMap();
+    HashMap<Character, Point> teleporterOut = new HashMap();
+
     //    R — робот
 //    * — камень
 //    L — закрытый выход
@@ -64,7 +69,7 @@ public class Game {
                             } else {
                                 if (map[x][y + 2] != ' ') {
                                     map[x][y + 1] = '\\';
-                                } else{
+                                } else {
                                     map[x][y + 1] = '@';
                                 }
                             }
@@ -81,7 +86,7 @@ public class Game {
                                 } else {
                                     if (map[x + 1][y + 2] != ' ') {
                                         map[x + 1][y + 1] = '\\';
-                                    } else{
+                                    } else {
                                         map[x + 1][y + 1] = '@';
                                     }
                                 }
@@ -97,7 +102,7 @@ public class Game {
                                 } else {
                                     if (map[x - 1][y + 2] != ' ') {
                                         map[x - 1][y + 1] = '\\';
-                                    }else map[x - 1][y + 1] = '@';
+                                    } else map[x - 1][y + 1] = '@';
                                 }
                                 if (map[x - 1][y + 2] == 'R') {
                                     canPlay = false;
@@ -111,9 +116,9 @@ public class Game {
                                 if (map[x][y] == '*') {
                                     map[x + 1][y + 1] = '*';
                                 } else {
-                                    if (map[x+1][y+2]!=' '){
-                                        map[x+1][y+1]='\\';
-                                    }else map[x + 1][y + 1] = '@';
+                                    if (map[x + 1][y + 2] != ' ') {
+                                        map[x + 1][y + 1] = '\\';
+                                    } else map[x + 1][y + 1] = '@';
                                 }
                                 if (map[x + 1][y + 2] == 'R') {
                                     canPlay = false;
@@ -174,6 +179,9 @@ public class Game {
                 canPlay = false;
                 break;
         }
+        if (teleporter.containsKey(map[robot.x + n][robot.y])) {
+            teleport(map[robot.x + n][robot.y]);
+        }
     }
 
     void UpOrDown(boolean flag) {
@@ -204,6 +212,9 @@ public class Game {
                 score += 50;
                 canPlay = false;
                 break;
+        }
+        if (teleporter.containsKey(map[robot.x][robot.y + n])) {
+            teleport(map[robot.x][robot.y + n]);
         }
     }
 
@@ -257,7 +268,7 @@ public class Game {
 
     public void getMap() {
         try {
-            String pathname = "map/input";
+            String pathname = "map/input1";
             File filename = new File(pathname);
             InputStreamReader reader = new InputStreamReader(
                     new FileInputStream(filename));
@@ -266,6 +277,20 @@ public class Game {
             line = br.readLine();
             int j = 0;
             int maxlength = 0;
+            while (line != null) {
+                if (line.length() > maxlength) maxlength = line.length();
+                line = br.readLine();
+                j++;
+            }
+            m = maxlength;
+            n = j;
+            reader = new InputStreamReader(
+                    new FileInputStream(filename));
+            br = new BufferedReader(reader);
+            line = "";
+            line = br.readLine();
+            j = 0;
+            map = new char[m][n];
             while (line != null) {
                 for (int i = 0; i < line.length(); i++) {
                     map[i][j] = line.charAt(i);
@@ -278,44 +303,71 @@ public class Game {
                     if (line.charAt(i) == '\\' || line.charAt(i) == '@') {
                         allLamda++;
                     }
+                    if (line.charAt(i) >= 'A' && line.charAt(i) <= 'I') {
+                        teleporter.put(line.charAt(i), new Point(i, j));
+                    }
+                    if (line.charAt(i) >= '1' && line.charAt(i) <= '9') {
+                        teleporterOut.put(line.charAt(i), new Point(i, j));
+                    }
                 }
-                if (line.length() > maxlength) maxlength = line.length();
                 line = br.readLine();
                 j++;
             }
-            m = maxlength;
-            n = j;
+
             br.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public boolean canMove(double a) {
-        if (a < 0.25) {
+    public boolean canMove(int a) {
+        if (a ==0) {
             char sth = map[robot.x + 1][robot.y];
-            if (sth == ' ' || sth == '.' || sth == '0' || sth == '\\') {
+            if (sth != '*' && sth != '@' && sth != '#') {
                 return true;
-            } else if (sth == '*' && map[robot.x + 2][robot.y] == ' ') {
+            } else if ((sth == '*' || sth == '@') && map[robot.x + 2][robot.y] == ' ') {
                 return true;
             } else return false;
-        } else if (a >= 0.25 && a < 0.5) {
+        } else if (a ==1) {
             char sth = map[robot.x - 1][robot.y];
-            if (sth == ' ' || sth == '.' || sth == '0' || sth == '\\') {
+            if (sth != '*' && sth != '@' && sth != '#') {
                 return true;
-            } else if (sth == '*' && map[robot.x - 2][robot.y] == ' ') {
+            } else if ((sth == '*' || sth == '@') && map[robot.x - 2][robot.y] == ' ') {
                 return true;
             } else return false;
-        } else if (a >= 0.5 && a < 0.75) {
+        } else if (a ==2) {
             char sth = map[robot.x][robot.y - 1];
-            if (sth == ' ' || sth == '.' || sth == '0' || sth == '\\') {
+            if (sth != '*' && sth != '@' && sth != '#') {
                 return true;
             } else return false;
         } else {
             char sth = map[robot.x][robot.y + 1];
-            if (sth == ' ' || sth == '.' || sth == '0' || sth == '\\') {
+            if (sth != '*' && sth != '@' && sth != '#') {
                 return true;
             } else return false;
         }
+    }
+public boolean isSafe(int x,int y){
+        boolean flag=true;
+        if (map[x][y-1]==' '&&(map[x][y-2]=='*'||map[x][y-2]=='@')){
+            flag=false;
+        }
+        if (map[x][y-1]==' '&&(map[x-1][y-1]=='*'||map[x-1][y-1]=='@'||map[x-1][y-1]=='\\')&&
+                (map[x-1][y-2]=='*'||map[x-1][y-2]=='@')){
+            flag=false;
+        }
+        if (map[x][y-1]==' '&&(map[x+1][y-1]=='*'||map[x+1][y-1]=='@')&&
+            (map[x+1][y-2]=='*'||map[x+1][y-2]=='@')&&
+                (map[x+2][y-2]!=' '||map[x+2][y-1]!=' ')){
+            flag=false;
+        }
+        return flag;
+}
+    public void teleport(char from) {
+        Point a = teleporterOut.get((char) (from - 16));
+        Point b = teleporter.get(from);
+        map[a.x][a.y] = 'R';
+        map[robot.x][robot.y] = ' ';
+        map[b.x][b.y] = ' ';
     }
 }

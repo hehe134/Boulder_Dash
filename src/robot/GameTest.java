@@ -7,10 +7,9 @@ public class GameTest {
 
     public static void main(String[] args) {
 
-
         Search mysearch = new Search();
-        mysearch.fd2(500);
-        System.out.println(mysearch.MinS);
+        mysearch.fd2(100000);
+        System.out.println("result :"+mysearch.MaxS);
 
 //        myGame.turnLeft();
 //        myGame.turnLeft();
