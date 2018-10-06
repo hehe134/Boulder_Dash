@@ -8,8 +8,11 @@ public class GameTest {
     public static void main(String[] args) {
 
         Search mysearch = new Search();
-        mysearch.fd2(100000);
-        System.out.println("result :"+mysearch.MaxS);
+        mysearch.fd2(10000);
+        System.out.println("result :" + mysearch.MaxS);
+//        AStar myAstar = new AStar();
+//        System.out.println("result2: " + myAstar.getWholePath());
+
 
 //        myGame.turnLeft();
 //        myGame.turnLeft();

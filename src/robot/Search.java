@@ -12,20 +12,20 @@ public class Search {
             x = (int) (Math.random() * 5);
             x1 = myGame.robot.x;
             y1 = myGame.robot.y;
-            if (x == 0 && myGame.canMove(x) && myGame.isSafe(x1 + 1, y1)) {
-                myGame.turnRight();
+            if (x == 0 && myGame.canMove('R') && myGame.isSafe(x1 + 1, y1)) {
+                myGame.RightOrLeft(1);
 //                System.out.print('R');
                 s += 'R';
-            } else if (x == 1 && myGame.canMove(x) && myGame.isSafe(x1 - 1, y1)) {
-                myGame.turnLeft();
+            } else if (x == 1 && myGame.canMove('L') && myGame.isSafe(x1 - 1, y1)) {
+                myGame.RightOrLeft(-1);
 //                System.out.print('L');
                 s += 'L';
-            } else if (x == 2 && myGame.canMove(x) && myGame.isSafe(x1, y1 - 1)) {
-                myGame.turnUp();
+            } else if (x == 2 && myGame.canMove('U') && myGame.isSafe(x1, y1 - 1)) {
+                myGame.UpOrDown(-1);
 //                System.out.print('U');
                 s += 'U';
-            } else if (x == 3 && myGame.canMove(x) && myGame.isSafe(x1, y1 + 1)) {
-                myGame.turnDown();
+            } else if (x == 3 && myGame.canMove('D') && myGame.isSafe(x1, y1 + 1)) {
+                myGame.UpOrDown(1);
 //                System.out.print('D');
                 s += 'D';
             }else if(x==5){
