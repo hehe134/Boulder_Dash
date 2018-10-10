@@ -7,7 +7,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 
 
-public class Game {
+public class Game implements Cloneable {
     public char[][] map;
     int[][] times;
     public Point robot;
@@ -31,7 +31,6 @@ public class Game {
 //    \ — λ
 //    O — открытый выход
 //    " " — пробел, пустая клетка
-
 
 
     public void fall() {
@@ -120,7 +119,7 @@ public class Game {
     void RightOrLeft(int flag) {
 //        if (flag) n = 1;
 //        else n = -1;
-        if(canPlay) {
+        if (canPlay) {
             switch (map[robot.x + flag][robot.y]) {
                 case ' ':
                     map[robot.x][robot.y] = ' ';
@@ -172,7 +171,7 @@ public class Game {
     }
 
     void UpOrDown(int flag) {
-        if(canPlay) {
+        if (canPlay) {
             switch (map[robot.x][robot.y + flag]) {
                 case ' ':
                     map[robot.x][robot.y] = ' ';
@@ -369,32 +368,32 @@ public class Game {
     public Point findNextLamda(Point current) {
         int y1;
         int x1;
-        Point lamda=null;
+        Point lamda = null;
         for (int i = 1; i < max(current.x, m - 1 - current.x, current.y, n - 1 - current.y); i++) {
             for (x1 = current.x - i; x1 <= current.x + i; x1++) {
                 y1 = i + current.y;
                 if (lamdaInMap(x1, y1)) {
-                    lamda= new Point(x1, y1);
+                    lamda = new Point(x1, y1);
                 }
                 y1 = current.y - i;
                 if (lamdaInMap(x1, y1)) {
-                    lamda= new Point(x1, y1);
+                    lamda = new Point(x1, y1);
                 }
             }
-            for (y1 = current.y - i ; y1 <= current.y+i; y1++) {
+            for (y1 = current.y - i; y1 <= current.y + i; y1++) {
                 x1 = current.x + i;
                 if (lamdaInMap(x1, y1)) {
-                    lamda= new Point(x1, y1);
+                    lamda = new Point(x1, y1);
                 }
                 x1 = current.x - i;
                 ;
                 if (lamdaInMap(x1, y1)) {
-                    lamda=new Point(x1, y1);
+                    lamda = new Point(x1, y1);
                 }
             }
         }
         return lamda;
-        }
+    }
 
     int max(int a, int b, int c, int d) {
         int max = a;
@@ -408,5 +407,12 @@ public class Game {
         if (x1 >= 0 && y1 >= 0 && x1 < m && y1 < n && map[x1][y1] == '\\') {
             return true;
         } else return false;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        Game newGame = (Game) super.clone();
+        newGame.robot = (Point) this.robot.clone();
+        return newGame;
     }
 }

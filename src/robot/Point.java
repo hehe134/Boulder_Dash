@@ -1,6 +1,6 @@
 package robot;
 
-public class Point {
+public class Point implements Cloneable {
     int x, y;
 
     public Point(int x, int y) {
@@ -22,5 +22,10 @@ public class Point {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

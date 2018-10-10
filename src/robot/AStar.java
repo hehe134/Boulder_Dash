@@ -2,7 +2,7 @@ package robot;
 
 import static java.lang.Math.abs;
 
-public class AStar {
+public class AStar implements Cloneable {
 //    public class node {
 //        int g, h, sum;
 //        Game.Point p;
@@ -27,17 +27,19 @@ public class AStar {
         while (myGame.findNextLamda(myGame.robot) != null) {
             lamda = myGame.findNextLamda(myGame.robot);
             findPath(myGame, myGame.robot, lamda);
-            result += s;
+            result += sb;
         }
         return result;
     }
 
     public void findPath(Game myGame, Point start, Point end) {
 
-        Game test;
+//        Game test;
         myTree.insert(distance(start, end), ' ', true, null, myGame);
         circle(start, end, myGame, myTree.root);
-        beClose(start, end);
+        Tree.TreeNode T= myTree.MinNode();
+        T.setClose();
+        beClose(start, end,T);
     }
 
     public void circle(Point start, Point end, Game myGame, Tree.TreeNode newN) {
@@ -46,35 +48,39 @@ public class AStar {
 
 //        newP.setX(start.getX());
 //        newP.setY(start.getY());
-        if (myGame.canMove('R') && myGame.isSafe(myGame.robot.x + 1, myGame.robot.y)) {
-            newP.x++;
-            test = myGame;
-            test.RightOrLeft(1);
-            myTree.insert(distance(newP, end), 'R', false, newN, test);
-        }
-        newP.setX(start.getX());
-        newP.setY(start.getY());
-        if (myGame.canMove('L') && myGame.isSafe(myGame.robot.x - 1, myGame.robot.y)) {
-            newP.x--;
-            test = myGame;
-            test.RightOrLeft(-1);
-            myTree.insert(distance(newP, end), 'L', false, newN, test);
-        }
-        newP.setX(start.getX());
-        newP.setY(start.getY());
-        if (myGame.canMove('U') && myGame.isSafe(myGame.robot.x, myGame.robot.y - 1)) {
-            newP.y--;
-            test = myGame;
-            test.UpOrDown(-1);
-            myTree.insert(distance(newP, end), 'U', false, newN, test);
-        }
-        newP.setX(start.getX());
-        newP.setY(start.getY());
-        if (myGame.canMove('D') && myGame.isSafe(myGame.robot.x, myGame.robot.y + 1)) {
-            newP.y++;
-            test = myGame;
-            test.UpOrDown(1);
-            myTree.insert(distance(newP, end), 'D', false, newN, test);
+        try {
+            if (myGame.canPlay && myGame.canMove('R') && myGame.isSafe(myGame.robot.x + 1, myGame.robot.y)) {
+                newP.x++;
+                test = (Game) myGame.clone();
+                test.RightOrLeft(1);
+                myTree.insert(distance(newP, end), 'R', false, newN, test);
+            }
+            newP.setX(start.getX());
+            newP.setY(start.getY());
+            if (myGame.canPlay && myGame.canMove('L') && myGame.isSafe(myGame.robot.x - 1, myGame.robot.y)) {
+                newP.x--;
+                test =(Game) myGame.clone();
+                test.RightOrLeft(-1);
+                myTree.insert(distance(newP, end), 'L', false, newN, test);
+            }
+            newP.setX(start.getX());
+            newP.setY(start.getY());
+            if (myGame.canPlay && myGame.canMove('U') && myGame.isSafe(myGame.robot.x, myGame.robot.y - 1)) {
+                newP.y--;
+                test = (Game) myGame.clone();
+                test.UpOrDown(-1);
+                myTree.insert(distance(newP, end), 'U', false, newN, test);
+            }
+            newP.setX(start.getX());
+            newP.setY(start.getY());
+            if (myGame.canPlay && myGame.canMove('D') && myGame.isSafe(myGame.robot.x, myGame.robot.y + 1)) {
+                newP.y++;
+                test =(Game) myGame.clone();
+                test.UpOrDown(1);
+                myTree.insert(distance(newP, end), 'D', false, newN, test);
+            }
+        }catch (CloneNotSupportedException e){
+
         }
     }
 
@@ -82,24 +88,27 @@ public class AStar {
     StringBuilder sb;
     String s = "";
 
-    public void beClose(Point start, Point end) {
-        newN1 = myTree.MinNode();
-        circle(start, end, newN1.getMyGame(), newN1);
-        myTree.MinNode().setClose();
-        System.out.printf("(" + myTree.MinNode().getMyGame().robot.getX() + "," + myTree.MinNode().getMyGame().robot.getY() + ")");
-        if (newN1.getMyGame().robot == end) {
+    public void beClose(Point start, Point end, Tree.TreeNode now) {
+        circle(start, end,  now.getMyGame(), now);
+       Tree.TreeNode T= myTree.MinNode();
+       T.setClose();
+        System.out.printf("(" + T.getMyGame().robot.getX() + "," + T.getMyGame().robot.getY() + ")");
+        if (T.getMyGame().robot.x == end.x&&T.getMyGame().robot.y == end.y) {
             s = "";
             sb = new StringBuilder(s);
-            while (newN1.getParent() != null) {
-                sb.insert(0, newN1.getDirection());
+            while (T.getParent() != null) {
+                sb.insert(0, T.getDirection());
+                T=T.getParent();
             }
         } else {
-            beClose(start, end);
+            beClose(start, end,T);
         }
     }
 
     public int distance(Point start, Point end) {
         return (abs(start.x - end.x) + abs(start.y - end.y));
     }
+
+
 }
 
