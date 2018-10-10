@@ -2,51 +2,8 @@ package robot;
 
 import java.util.*;
 
-public class Tree implements Cloneable{
+public class Tree {
     TreeNode root = null;
-
-
-    public class TreeNode {
-        private List<TreeNode> childList;
-
-        private int key;
-        private char direction;
-        //        private TreeNode child;
-        private TreeNode parent;
-        private boolean close;
-        Game myGame;
-
-        public TreeNode(int key, char direction, boolean close, List<TreeNode> childList,
-                        TreeNode parent, Game myGame) {
-            this.key = key;
-            this.childList = childList;
-            this.parent = parent;
-            this.close = close;
-            this.direction = direction;
-            this.myGame = myGame;
-        }
-
-        public int getKey() {
-            return key;
-        }
-
-        public Game getMyGame() {
-            return myGame;
-        }
-
-        public void setClose() {
-            close = true;
-        }
-
-        public TreeNode getParent() {
-            return parent;
-        }
-
-        public char getDirection() {
-            return direction;
-        }
-
-    }
 
     public void insert(int key, char direction, boolean close, TreeNode parent, Game myGame) {
         TreeNode newNode = new TreeNode(key, direction, close, null, parent, myGame);
@@ -88,8 +45,5 @@ public class Tree implements Cloneable{
         }
 
     }
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
-    }
+
 }

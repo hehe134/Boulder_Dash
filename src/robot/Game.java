@@ -4,12 +4,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.HashMap;
+
+import static java.util.Arrays.*;
 
 
 public class Game implements Cloneable {
-    public char[][] map;
-    int[][] times;
+    public Character[][] map;
+    //    int[][] times;
     public Point robot;
     public int lamda = 0;
     public int allLamda = 0;
@@ -161,12 +164,14 @@ public class Game implements Cloneable {
                     canPlay = false;
                     break;
             }
+            printMap();
             if (teleporter.containsKey(map[robot.x + flag][robot.y])) {
                 teleport(map[robot.x + flag][robot.y]);
             }
             fall();
             move++;
             score--;
+
         }
     }
 
@@ -197,6 +202,7 @@ public class Game implements Cloneable {
                     canPlay = false;
                     break;
             }
+            printMap();
             if (teleporter.containsKey(map[robot.x][robot.y + flag])) {
                 teleport(map[robot.x][robot.y + flag]);
             }
@@ -258,6 +264,10 @@ public class Game implements Cloneable {
         score += 25;
     }
 
+    public char getObject(Point p) {
+        return map[p.x][p.y];
+    }
+
     public void getMap() {
         try {
             String pathname = "map/input1";
@@ -282,7 +292,7 @@ public class Game implements Cloneable {
             line = "";
             line = br.readLine();
             j = 0;
-            map = new char[m][n];
+            map = new Character[m][n];
             while (line != null) {
                 for (int i = 0; i < line.length(); i++) {
                     map[i][j] = line.charAt(i);
@@ -409,10 +419,27 @@ public class Game implements Cloneable {
         } else return false;
     }
 
+    void printMap() {
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i < m; i++) {
+                System.out.print(map[i][j]);
+            }
+            System.out.print("\n");
+        }
+        System.out.print("\n");
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         Game newGame = (Game) super.clone();
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i < m; i++) {
+                this.map[i][j] = newGame.map[i][j];
+            }
+        }
+        System.out.println(newGame.map==this.map);
         newGame.robot = (Point) this.robot.clone();
+        System.out.println(newGame.robot==this.robot);
         return newGame;
     }
 }

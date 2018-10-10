@@ -1,17 +1,31 @@
 package robot;
 
+import java.util.Scanner;
 
 public class GameTest {
-    public GameTest() {
-    }
+
 
     public static void main(String[] args) {
-
+        Game myGame = new Game();
+        myGame.getMap();
+        Scanner scan = new Scanner(System.in);
+        while (scan.hasNext()) {
+            String str = scan.next();
+            if (str.equals("R")) myGame.RightOrLeft(1);
+            else if (str.equals("L")) myGame.RightOrLeft(-1);
+            else if (str.equals("U")) myGame.UpOrDown(-1);
+            else if (str.equals("D")) myGame.UpOrDown(1);
+            if (myGame.win) {
+                System.out.println("You win");
+                break;
+            }
+        }
 //        Search mysearch = new Search();
 //        mysearch.fd2(10000);
 //        System.out.println("result :" + mysearch.MaxS);
-        AStar myAstar = new AStar();
-        System.out.println("result2: " + myAstar.getWholePath());
+
+//        AStar myAstar = new AStar();
+//        System.out.println("result2: " + myAstar.getWholePath());
 
 
 //        myGame.turnLeft();
