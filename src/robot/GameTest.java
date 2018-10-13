@@ -20,12 +20,12 @@ public class GameTest {
         while (scan.hasNext()) {
             String str = scan.next();
             for (int i = 0; i < str.length(); i++) {
-                if (str.charAt(i) == 'R') myGame.RightOrLeft(1);
-                else if (str.charAt(i) == 'L') myGame.RightOrLeft(-1);
-                else if (str.charAt(i) == 'U') myGame.UpOrDown(-1);
-                else if (str.charAt(i) == 'D') myGame.UpOrDown(1);
-                else if (str.charAt(i) == 'A') myGame.commandA();
-                else if (str.charAt(i) == 'W') myGame.commandW();
+                if (str.charAt(i) == 'R'||str.charAt(i) == 'r') myGame.RightOrLeft(1);
+                else if (str.charAt(i) == 'L'||str.charAt(i) == 'l') myGame.RightOrLeft(-1);
+                else if (str.charAt(i) == 'U'||str.charAt(i) == 'u') myGame.UpOrDown(-1);
+                else if (str.charAt(i) == 'D'||str.charAt(i) == 'd') myGame.UpOrDown(1);
+                else if (str.charAt(i) == 'A'||str.charAt(i) == 'a') myGame.commandA();
+                else if (str.charAt(i) == 'W'||str.charAt(i) == 'w') myGame.commandW();
                 System.out.println("Score: " + myGame.score + "\nMoves: " + myGame.move);
                 if (myGame.win) {
                     System.out.println("You win");

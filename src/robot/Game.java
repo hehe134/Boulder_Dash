@@ -1,6 +1,5 @@
 package robot;
 
-import com.sun.jdi.Value;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -492,7 +491,10 @@ public class Game implements Cloneable {
     void printMap() {
         for (int j = 0; j < n; j++) {
             for (int i = 0; i < m; i++) {
-                System.out.print(map[i][j]);
+                if (map[i][j] == '\u0000') {
+                    System.out.print(' ');
+                } else
+                    System.out.print(map[i][j]);
             }
             System.out.print("\n");
         }
@@ -566,7 +568,7 @@ public class Game implements Cloneable {
         this.theRobotHasBeen = copyMap(newGame.theRobotHasBeen);
 //        System.out.println(newGame.map == this.map);
         newGame.robot = (Point) this.robot.clone();
-        newGame.point_lamda=(ArrayList<Point>) this.point_lamda.clone();
+        newGame.point_lamda = (ArrayList<Point>) this.point_lamda.clone();
 //        System.out.println(newGame.robot == this.robot);
         return newGame;
     }
