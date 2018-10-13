@@ -18,11 +18,13 @@ public class AStar implements Cloneable {
         lamda = myGame.findNextLamda2(myGame.robot);
         findPath(myGame, myGame.robot, lamda);
         result += sb;
+        robot_Game.newMapB();
         while (robot_Game.findNextLamda2(robot_Game.robot) != null) {
             myTree = new Tree();
             lamda = robot_Game.findNextLamda2(robot_Game.robot);
             findPath(robot_Game, robot_Game.robot, lamda);
             result += sb;
+            robot_Game.newMapB();
         }
         myTree = new Tree();
         findPath(robot_Game, robot_Game.robot, robot_Game.lift);
@@ -42,41 +44,38 @@ public class AStar implements Cloneable {
 
     public void aroundRobot(Point start, Point end, Game myGame, TreeNode newN) {
 
-        Point newP = new Point(start.getX(), start.getY());
 
+        Point newP = myGame.robot;
         try {
-            if (myGame.canPlay && myGame.canMove('R') && myGame.alive(myGame.robot.x + 1, myGame.robot.y) ) {
-                newP.x++;
+            if (myGame.canPlay && myGame.canMove('R') && myGame.alive(newP.x + 1, newP.y) && myGame.hasBeen(newP.x + 1, newP.y) == false) {
+
                 Game test = (Game) myGame.clone();
                 test.RightOrLeft(1);
                 if (test.canPlay == true || test.win == true) {
                     myTree.insert(distance(test.robot, start, end), 'R', false, newN, test);
                 }
             }
-            newP.setX(start.getX());
-            newP.setY(start.getY());
-            if (myGame.canPlay && myGame.canMove('L') && myGame.alive(myGame.robot.x - 1, myGame.robot.y) ) {
-                newP.x--;
+
+            if (myGame.canPlay && myGame.canMove('L') && myGame.alive(newP.x - 1, newP.y) && myGame.hasBeen(newP.x - 1, newP.y) == false) {
+
                 Game test = (Game) myGame.clone();
                 test.RightOrLeft(-1);
                 if (test.canPlay == true || test.win == true) {
                     myTree.insert(distance(test.robot, start, end), 'L', false, newN, test);
                 }
             }
-            newP.setX(start.getX());
-            newP.setY(start.getY());
-            if (myGame.canPlay && myGame.canMove('U') && myGame.alive(myGame.robot.x, myGame.robot.y - 1) ) {
-                newP.y--;
+
+            if (myGame.canPlay && myGame.canMove('U') && myGame.alive(newP.x, newP.y - 1) && myGame.hasBeen(newP.x, newP.y - 1) == false) {
+
                 Game test = (Game) myGame.clone();
                 test.UpOrDown(-1);
                 if (test.canPlay == true || test.win == true) {
                     myTree.insert(distance(test.robot, start, end), 'U', false, newN, test);
                 }
             }
-            newP.setX(start.getX());
-            newP.setY(start.getY());
-            if (myGame.canPlay && myGame.canMove('D') && myGame.alive(myGame.robot.x, myGame.robot.y + 1) ) {
-                newP.y++;
+
+            if (myGame.canPlay && myGame.canMove('D') && myGame.alive(newP.x, newP.y + 1) && myGame.hasBeen(newP.x, newP.y + 1) == false) {
+
                 Game test = (Game) myGame.clone();
                 test.UpOrDown(1);
                 if (test.canPlay == true || test.win == true) {

@@ -14,6 +14,7 @@ import static java.util.Arrays.*;
 
 public class Game implements Cloneable {
     public char[][] map;
+    boolean[][] theRobotHasBeen;
     //    int[][] times;
     public Point robot;
     public int lamda = 0;
@@ -187,6 +188,7 @@ public class Game implements Cloneable {
                         break;
                 }
             }
+            theRobotHasBeen[robot.x][robot.y] = true;
 //            printMap();
         }
     }
@@ -230,6 +232,7 @@ public class Game implements Cloneable {
                         break;
                 }
             }
+            theRobotHasBeen[robot.x][robot.y] = true;
 //            printMap();
         }
     }
@@ -352,11 +355,13 @@ public class Game implements Cloneable {
                 line = br.readLine();
                 j++;
             }
-
             br.close();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+        theRobotHasBeen = new boolean[m][n];
+        newMapB();
     }
 
     public boolean canMove(char a) {
@@ -513,6 +518,38 @@ public class Game implements Cloneable {
         return newMap;
     }
 
+//    List copyList(List<Point> PL){
+//        List newPL=new ArrayList();
+//        for (int i=0;i<PL.size();i++){
+//            newPL.add(PL[i]);
+//        }
+//    }
+
+    boolean[][] copyMap(boolean[][] Map) {
+        boolean[][] newMap = new boolean[m][n];
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i < m; i++) {
+                newMap[i][j] = Map[i][j];
+            }
+        }
+        return newMap;
+    }
+
+    void newMapB() {
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i < m; i++) {
+                if (i == robot.x && j == robot.y)
+                    theRobotHasBeen[i][j] = true;
+                else theRobotHasBeen[i][j] = false;
+            }
+        }
+    }
+
+    boolean hasBeen(int x, int y) {
+        if (theRobotHasBeen[x][y] == true) return true;
+        else return false;
+    }
+
     Point R() {
         return new Point(robot.x + 1, robot.y);
     }
@@ -533,8 +570,10 @@ public class Game implements Cloneable {
     public Object clone() throws CloneNotSupportedException {
         Game newGame = (Game) super.clone();
         this.map = copyMap(newGame.map);
+        this.theRobotHasBeen = copyMap(newGame.theRobotHasBeen);
 //        System.out.println(newGame.map == this.map);
         newGame.robot = (Point) this.robot.clone();
+        newGame.point_lamda=(ArrayList<Point>) this.point_lamda.clone();
 //        System.out.println(newGame.robot == this.robot);
         return newGame;
     }
