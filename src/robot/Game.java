@@ -1,22 +1,25 @@
 package robot;
 
+import com.sun.jdi.Value;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
+import static java.lang.Math.abs;
 import static java.util.Arrays.*;
 
 
 public class Game implements Cloneable {
-    public Character[][] map;
+    public char[][] map;
     //    int[][] times;
     public Point robot;
     public int lamda = 0;
     public int allLamda = 0;
     public Point lift;
+    ArrayList<Point> point_lamda = new ArrayList<Point>();
     int m;
     int n;
     int move;
@@ -25,7 +28,8 @@ public class Game implements Cloneable {
     public boolean win = false;
     HashMap<Character, Point> teleporter = new HashMap();
     HashMap<Character, Point> teleporterOut = new HashMap();
-
+    int water;
+    int aliveUnderWater = 10;
     //    R — робот
 //    * — камень
 //    L — закрытый выход
@@ -118,97 +122,115 @@ public class Game implements Cloneable {
 
     }
 
+    void step() {
+        fall();
+        move++;
+        score--;
+    }
 
     void RightOrLeft(int flag) {
 //        if (flag) n = 1;
 //        else n = -1;
         if (canPlay) {
-            switch (map[robot.x + flag][robot.y]) {
-                case ' ':
-                    map[robot.x][robot.y] = ' ';
-                    robot.x += flag;
-                    map[robot.x][robot.y] = 'R';
-                    break;
-                case '.':
-                    map[robot.x][robot.y] = ' ';
-                    robot.x += flag;
-                    map[robot.x][robot.y] = 'R';
-                    break;
-                case '*':
-                    if (map[robot.x + 2 * flag][robot.y] == ' ') {
-                        map[robot.x][robot.y] = ' ';
-                        robot.x += flag;
-                        map[robot.x][robot.y] = 'R';
-                        map[robot.x + flag][robot.y] = '*';
-                    }
-                    break;
-                case '@':
-                    if (map[robot.x + 2 * flag][robot.y] == ' ') {
-                        map[robot.x][robot.y] = ' ';
-                        robot.x += flag;
-                        map[robot.x][robot.y] = 'R';
-                        map[robot.x + flag][robot.y] = '@';
-                    }
-                    break;
-                case '\\':
-                    lamda++;
-                    score += 25;
-                    openTheLift();
-                    map[robot.x][robot.y] = ' ';
-                    robot.x += flag;
-                    map[robot.x][robot.y] = 'R';
-                    break;
-                case '0':
-                    win = true;
-                    score += 50;
-                    canPlay = false;
-                    break;
-            }
-            printMap();
             if (teleporter.containsKey(map[robot.x + flag][robot.y])) {
                 teleport(map[robot.x + flag][robot.y]);
+            } else {
+                switch (map[robot.x + flag][robot.y]) {
+                    case ' ':
+                        map[robot.x][robot.y] = ' ';
+                        robot.x += flag;
+                        map[robot.x][robot.y] = 'R';
+                        step();
+                        break;
+                    case '.':
+                        map[robot.x][robot.y] = ' ';
+                        robot.x += flag;
+                        map[robot.x][robot.y] = 'R';
+                        step();
+                        break;
+                    case '*':
+                        if (map[robot.x + 2 * flag][robot.y] == ' ') {
+                            map[robot.x][robot.y] = ' ';
+                            robot.x += flag;
+                            map[robot.x][robot.y] = 'R';
+                            map[robot.x + flag][robot.y] = '*';
+                            step();
+                        }
+                        break;
+                    case '@':
+                        if (map[robot.x + 2 * flag][robot.y] == ' ') {
+                            map[robot.x][robot.y] = ' ';
+                            robot.x += flag;
+                            map[robot.x][robot.y] = 'R';
+                            map[robot.x + flag][robot.y] = '@';
+                            step();
+                        }
+                        break;
+                    case '\\':
+                        lamda++;
+                        score += 25;
+                        openTheLift();
+                        map[robot.x][robot.y] = ' ';
+                        robot.x += flag;
+                        map[robot.x][robot.y] = 'R';
+                        step();
+                        removeLamda(robot);
+                        break;
+                    case '0':
+                        win = true;
+                        map[robot.x][robot.y] = ' ';
+                        robot.x = robot.x + flag;
+                        map[robot.x][robot.y] = 'R';
+                        score += 50;
+                        canPlay = false;
+                        step();
+                        break;
+                }
             }
-            fall();
-            move++;
-            score--;
-
+//            printMap();
         }
     }
 
     void UpOrDown(int flag) {
         if (canPlay) {
-            switch (map[robot.x][robot.y + flag]) {
-                case ' ':
-                    map[robot.x][robot.y] = ' ';
-                    robot.y += flag;
-                    map[robot.x][robot.y] = 'R';
-                    break;
-                case '\\':
-                    lamda++;
-                    score += 25;
-                    openTheLift();
-                    map[robot.x][robot.y] = ' ';
-                    robot.y += flag;
-                    map[robot.x][robot.y] = 'R';
-                    break;
-                case '.':
-                    map[robot.x][robot.y] = ' ';
-                    robot.y += flag;
-                    map[robot.x][robot.y] = 'R';
-                    break;
-                case '0':
-                    win = true;
-                    score += 50;
-                    canPlay = false;
-                    break;
-            }
-            printMap();
             if (teleporter.containsKey(map[robot.x][robot.y + flag])) {
                 teleport(map[robot.x][robot.y + flag]);
+            } else {
+                switch (map[robot.x][robot.y + flag]) {
+                    case ' ':
+                        map[robot.x][robot.y] = ' ';
+                        robot.y += flag;
+                        map[robot.x][robot.y] = 'R';
+                        step();
+                        break;
+                    case '\\':
+                        lamda++;
+                        score += 25;
+                        openTheLift();
+                        map[robot.x][robot.y] = ' ';
+                        robot.y += flag;
+                        map[robot.x][robot.y] = 'R';
+                        step();
+                        removeLamda(robot);
+                        break;
+                    case '.':
+                        map[robot.x][robot.y] = ' ';
+                        robot.y += flag;
+                        map[robot.x][robot.y] = 'R';
+                        step();
+                        break;
+                    case '0':
+                        win = true;
+                        map[robot.x][robot.y] = ' ';
+                        robot.y = robot.y + flag;
+                        map[robot.x][robot.y] = 'R';
+                        score += 50;
+                        canPlay = false;
+                        step();
+                        break;
+                }
             }
-            fall();
-            move++;
-            score--;
+//            printMap();
         }
     }
 
@@ -259,9 +281,21 @@ public class Game implements Cloneable {
 */
 
     public void commandA() {
-        canPlay = false;
-        win = true;
-        score += 25;
+        if (canPlay) {
+            canPlay = false;
+            win = true;
+            score += 25;
+        }
+        printMap();
+    }
+
+    public void commandW() {
+        if (canPlay) {
+            fall();
+            move++;
+            score--;
+        }
+        printMap();
     }
 
     public char getObject(Point p) {
@@ -292,7 +326,7 @@ public class Game implements Cloneable {
             line = "";
             line = br.readLine();
             j = 0;
-            map = new Character[m][n];
+            map = new char[m][n];
             while (line != null) {
                 for (int i = 0; i < line.length(); i++) {
                     map[i][j] = line.charAt(i);
@@ -304,6 +338,9 @@ public class Game implements Cloneable {
                     }
                     if (line.charAt(i) == '\\' || line.charAt(i) == '@') {
                         allLamda++;
+                    }
+                    if (line.charAt(i) == '\\') {
+                        point_lamda.add(new Point(i, j));
                     }
                     if (line.charAt(i) >= 'A' && line.charAt(i) <= 'I') {
                         teleporter.put(line.charAt(i), new Point(i, j));
@@ -325,32 +362,32 @@ public class Game implements Cloneable {
     public boolean canMove(char a) {
         if (a == 'R') {
             char sth = map[robot.x + 1][robot.y];
-            if (sth != '*' && sth != '@' && sth != '#') {
+            if (sth != '*' && sth != '@' && sth != '#' && sth != 'L') {
                 return true;
             } else if ((sth == '*' || sth == '@') && map[robot.x + 2][robot.y] == ' ') {
                 return true;
             } else return false;
         } else if (a == 'L') {
             char sth = map[robot.x - 1][robot.y];
-            if (sth != '*' && sth != '@' && sth != '#') {
+            if (sth != '*' && sth != '@' && sth != '#' && sth != 'L') {
                 return true;
             } else if ((sth == '*' || sth == '@') && map[robot.x - 2][robot.y] == ' ') {
                 return true;
             } else return false;
         } else if (a == 'U') {
             char sth = map[robot.x][robot.y - 1];
-            if (sth != '*' && sth != '@' && sth != '#') {
+            if (sth != '*' && sth != '@' && sth != '#' && sth != 'L') {
                 return true;
             } else return false;
         } else {
             char sth = map[robot.x][robot.y + 1];
-            if (sth != '*' && sth != '@' && sth != '#') {
+            if (sth != '*' && sth != '@' && sth != '#' && sth != 'L') {
                 return true;
             } else return false;
         }
     }
 
-    public boolean isSafe(int x, int y) {
+    public boolean alive(int x, int y) {
         boolean flag = true;
         if (map[x][y - 1] == ' ' && (map[x][y - 2] == '*' || map[x][y - 2] == '@')) {
             flag = false;
@@ -372,6 +409,8 @@ public class Game implements Cloneable {
         Point b = teleporter.get(from);
         map[a.x][a.y] = 'R';
         map[robot.x][robot.y] = ' ';
+        robot.x = a.x;
+        robot.y = a.y;
         map[b.x][b.y] = ' ';
     }
 
@@ -396,13 +435,39 @@ public class Game implements Cloneable {
                     lamda = new Point(x1, y1);
                 }
                 x1 = current.x - i;
-                ;
                 if (lamdaInMap(x1, y1)) {
                     lamda = new Point(x1, y1);
                 }
             }
         }
         return lamda;
+    }
+
+    Point findNextLamda2(Point current) {
+        Iterator<Point> it = point_lamda.iterator();
+        int MINdis = Integer.MAX_VALUE;
+        int dis;
+        Point MIN_Point = null;
+        Point now = null;
+        while (it.hasNext()) {
+            now = it.next();
+            dis = (abs(current.x - now.x) + abs(current.y - now.y));
+            if (dis < MINdis) {
+                MINdis = dis;
+                MIN_Point = now;
+            }
+        }
+        return MIN_Point;
+    }
+
+    void removeLamda(Point p) {
+        Iterator<Point> it = point_lamda.iterator();
+        while (it.hasNext()) {
+            Point e = it.next();
+            if (e.getX() == p.getX() && e.getY() == p.getY()) {
+                it.remove();
+            }
+        }
     }
 
     int max(int a, int b, int c, int d) {
@@ -429,17 +494,48 @@ public class Game implements Cloneable {
         System.out.print("\n");
     }
 
+    void water(int nStart) {
+        int nNow = nStart + move / 20;
+        if (n - robot.y <= nNow) {
+            aliveUnderWater--;
+            if (aliveUnderWater == 0) canPlay = false;
+        } else aliveUnderWater = 10;
+
+    }
+
+    char[][] copyMap(char[][] Map) {
+        char[][] newMap = new char[m][n];
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i < m; i++) {
+                newMap[i][j] = Map[i][j];
+            }
+        }
+        return newMap;
+    }
+
+    Point R() {
+        return new Point(robot.x + 1, robot.y);
+    }
+
+    Point L() {
+        return new Point(robot.x - 1, robot.y);
+    }
+
+    Point U() {
+        return new Point(robot.x, robot.y - 1);
+    }
+
+    Point D() {
+        return new Point(robot.x, robot.y + 1);
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         Game newGame = (Game) super.clone();
-        for (int j = 0; j < n; j++) {
-            for (int i = 0; i < m; i++) {
-                this.map[i][j] = newGame.map[i][j];
-            }
-        }
-        System.out.println(newGame.map==this.map);
+        this.map = copyMap(newGame.map);
+//        System.out.println(newGame.map == this.map);
         newGame.robot = (Point) this.robot.clone();
-        System.out.println(newGame.robot==this.robot);
+//        System.out.println(newGame.robot == this.robot);
         return newGame;
     }
 }

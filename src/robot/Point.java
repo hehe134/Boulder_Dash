@@ -24,6 +24,10 @@ public class Point implements Cloneable {
         this.y = y;
     }
 
+    public Boolean samePoint(Point p) {
+        return (this.x == p.x && this.y == p.y);
+    }
+
     @Override
     public Object clone() throws CloneNotSupportedException {
         return super.clone();

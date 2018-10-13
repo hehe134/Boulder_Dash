@@ -22,9 +22,6 @@ public class TreeNode implements Cloneable {
         this.myGame = myGame;
     }
 
-    public int getKey() {
-        return key;
-    }
 
     public Game getMyGame() {
         return myGame;
@@ -44,6 +41,8 @@ public class TreeNode implements Cloneable {
 
     @Override
     public Object clone() throws CloneNotSupportedException {
+        TreeNode newTreeNode=(TreeNode) super.clone();
+        newTreeNode.myGame=(Game)this.myGame.clone();
         return super.clone();
     }
 }
