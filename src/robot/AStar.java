@@ -1,8 +1,7 @@
 package robot;
 
 import static java.lang.Math.abs;
-import static java.lang.Math.sqrt;
-import static java.util.Arrays.copyOf;
+
 
 public class AStar implements Cloneable {
 
@@ -120,8 +119,5 @@ public class AStar implements Cloneable {
     }
 
 
-//    public double distance(Point robot,Point start, Point end) {
-//        return sqrt((start.x - end.x)*(start.x - end.x) + (start.y - end.y)*(start.y - end.y));
-//    }
 }
 

@@ -518,13 +518,6 @@ public class Game implements Cloneable {
         return newMap;
     }
 
-//    List copyList(List<Point> PL){
-//        List newPL=new ArrayList();
-//        for (int i=0;i<PL.size();i++){
-//            newPL.add(PL[i]);
-//        }
-//    }
-
     boolean[][] copyMap(boolean[][] Map) {
         boolean[][] newMap = new boolean[m][n];
         for (int j = 0; j < n; j++) {
